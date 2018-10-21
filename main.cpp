@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include "string.h"
+#include <math.h>
 
 using namespace std;
 
@@ -45,9 +46,11 @@ int main(int argc, char* argv[])
                        "[-count] - number of sirchingchars, default file <END> \n"
                        "[-o] - output like:\n"
                        "\tmap - standart map(default)\n"
-                       "\tsize - show file size\n"
-                       "\tc_count - show value number\n"
-                       "\tf_count - show not value number\n"
+                       "\tfilesize - show file size\n"
+                       "\tvalcount - show value number\n"
+                       "\tnvalcount - show not value number\n"
+                       "\tvalpercent - show value percent\n"
+                       "\tnvalcount - show not value percent\n"
                        "[-digfromat - [DEC | HEX | hex | oct | CHAR | TAB] - format of fonded value\n"
                        "[-nulfromat - format of value if not found\n"
                        "[-delimiter] - TAB default \n"
@@ -77,14 +80,12 @@ int main(int argc, char* argv[])
     vector<char> fdata;
     fdata.assign(istreambuf_iterator<char>(hfile), istreambuf_iterator<char>());
 
+    string output = "map";
     if(!gcv(argc, argv, "-o", val)){
         printf(help.c_str());
         return 0;
-    }
-
-    if(val == "size"){
-         printf("%i\n", fdata.size());
-         return 0;
+    }else{
+        output = val;
     }
 
     unsigned char c;
@@ -95,7 +96,6 @@ int main(int argc, char* argv[])
     }else{
         from = 0;
     }
-
 
     if(gcv(argc, argv, "-count", val)){
         to = from + stoi(val);
@@ -162,32 +162,101 @@ int main(int argc, char* argv[])
 
     int k = 0;
 
-    for(int i = from; i != to; i++){
-        //get char
-        c = static_cast<unsigned char>(fdata.at(i));
-
-        //for each chars do
-        if((fq > 0 && (i + fqoffset) % fq == 0) || (k > 0)){
-            if(fqlength > 0 && (i + fqoffset) % fq == 0){
-                k = fqlength + 1;
-            }
+    if(output == "filesize"){
+         printf("%i\n", fdata.size());
+         return 0;
+    }
+    if(output == "valcount"){
+        int count = 0;
+        for(int i = from; i != to; i++){
+            //get char
+            c = static_cast<unsigned char>(fdata.at(i));
             if(c == value){
-                printf(fqformat.c_str(), c);
-            }else{
-                printf(fqnformat.c_str(), c);
+                count++;
             }
-            k--;
-        }else if(c == value){
-            printf(digformat.c_str(), c);
-        }else{
-            printf(nulformat.c_str(), c);
         }
-        printf("%s", delimiter.c_str());
-        if(grid > 0 && g == grid-1){
-            printf("\n");
-            g = 0;
-        }else{
-            g++;
+        printf("%i\n", count);
+        return 0;
+    }
+    if(output == "nvalcount"){
+        int count = 0;
+        for(int i = from; i != to; i++){
+            //get char
+            c = static_cast<unsigned char>(fdata.at(i));
+            if(c != value){
+                count++;
+            }
+        }
+        printf("%i\n", count);
+        return 0;
+    }
+    if(output == "valpercent"){
+        double result = 0;
+        int count = 0;
+        for(int i = from; i != to; i++){
+            //get char
+            c = static_cast<unsigned char>(fdata.at(i));
+            if(c == value){
+                count++;
+            }
+        }
+        printf("%i/", count);
+        printf("%i ", to);
+        result = count;
+        result /= to;
+        result *=100;
+        result =floor(result);
+        printf("%f%%\n", result);
+        return 0;
+    }
+    if(output == "nvalpercent"){
+        double result = 0;
+        int count = 0;
+        for(int i = from; i != to; i++){
+            //get char
+            c = static_cast<unsigned char>(fdata.at(i));
+            if(c != value){
+                count++;
+            }
+        }
+        printf("%i/", count);
+        printf("%i ", to);
+        result = count;
+        result /= to;
+        result *=100;
+        result =floor(result);
+        printf("%f%%\n", result);
+        return 0;
+    }
+
+    if(output == "map"){
+        for(int i = from; i != to; i++){
+            //get char
+            c = static_cast<unsigned char>(fdata.at(i));
+
+            //for each chars do
+            if((fq > 0 && (i + fqoffset) % fq == 0) || (k > 0)){
+                if(fqlength > 0 && (i + fqoffset) % fq == 0){
+                    k = fqlength + 1;
+                }
+                if(c == value){
+                    printf(fqformat.c_str(), c);
+                }else{
+                    printf(fqnformat.c_str(), c);
+                }
+                k--;
+            }else if(c == value){
+                printf(digformat.c_str(), c);
+            }else{
+                printf(nulformat.c_str(), c);
+            }
+            printf("%s", delimiter.c_str());
+            if(grid > 0 && g == grid-1){
+                printf("\n");
+                g = 0;
+            }else{
+                g++;
+            }
         }
     }
 
