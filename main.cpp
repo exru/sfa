@@ -51,6 +51,7 @@ int main(int argc, char* argv[])
                        "\tnvalcount - show not value number\n"
                        "\tvalpercent - show value percent\n"
                        "\tnvalcount - show not value percent\n"
+                       "\tgridcount - count grid rows\n"
                        "[-digfromat - [DEC | HEX | hex | oct | CHAR | TAB] - format of fonded value\n"
                        "[-nulfromat - format of value if not found\n"
                        "[-delimiter] - TAB default \n"
@@ -89,7 +90,7 @@ int main(int argc, char* argv[])
     }
 
     unsigned char c;
-    int i, from, to;
+    int i, from, to, cnt;
 
     if(gcv(argc, argv, "-from", val)){
         from = stoi(val);
@@ -97,12 +98,14 @@ int main(int argc, char* argv[])
         from = 0;
     }
 
-    if(gcv(argc, argv, "-count", val)){
+    if(gcv(argc, argv, "-count", val)){        
         to = from + stoi(val);
         to = to > fdata.size() ?  fdata.size() : to;
     }else{
         to = fdata.size();
     }
+
+    cnt = to - from;
 
     unsigned char value = 0;
     if(gcv(argc, argv, "-val", val)){
@@ -226,6 +229,12 @@ int main(int argc, char* argv[])
         result *=100;
         result =floor(result);
         printf("%f%%\n", result);
+        return 0;
+    }
+
+    if(output == "gridcount"){
+        double result = (double)cnt / (double)max(grid, 1);
+        printf("%f\n", result);
         return 0;
     }
 
