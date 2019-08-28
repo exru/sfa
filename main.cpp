@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
                        "\tnvalcount - show not value percent\n"
                        "\tgridcount - count grid rows\n"
                        "[-digfromat - [DEC | HEX | hex | oct | CHAR | TAB] - format of fonded value\n"
-                       "[-nulfromat - format of value if not found\n"
+                       "[-nulformat - format of value if not found\n"
                        "[-delimiter] - TAB default \n"
                        "[-grid] - do return every N simbols \n"
                        "[-fq] - replace each number with fqformat\n"
