@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     //анализ входных аргументов
     string val, sign0, sign1, help = "Example:hf -f filename.txt -o map\n"
                        "[-f] - file name\n"
-                       "[-v] - searching value of [0..255]\n"
+                       "[-val] - searching value of [0..255]\n"
                        "[-from] - searching position in file, default file <BEGIN>\n"
                        "[-count] - number of sirchingchars, default file <END> \n"
                        "[-o] - output like:\n"
